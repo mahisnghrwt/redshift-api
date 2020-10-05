@@ -11,7 +11,7 @@
 
 #### Endpoints
 ---------------------
-                                                                        AUTHENTICATION
+|desc|                    |       |method|        endpoint|         authentication|
 []  Submit calculations             POST            /api/               REQUIRED
 []  '' as Guest           [single]  POST            /api/guest/                 
 [] Fetch list of methods            GET             /api/methods/               
