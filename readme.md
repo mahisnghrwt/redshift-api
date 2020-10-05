@@ -1,13 +1,10 @@
 # Redshift API
 
 ### Intro
----------------------
 
 ### Installation
----------------------
 
 ### Usage
----------------------
 
 #### Endpoints
 
@@ -21,7 +18,7 @@
 |   :black_square_button:   | Get Redshift result     | [single]  | `GET`   | ```/api/result/xx```   |                |
 |   :black_square_button:   | Get Redshift result     |           | `POST`  | ```/api/result/```      | *required*   |
 
-#### Development
+### Development
 - [ ] Fix JSON response format
 - [ ] Update status of calculations accordingly
 - [ ] Generate graphs
