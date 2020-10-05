@@ -19,7 +19,7 @@
 |   :black_square_button:   | Get Redshift result     |           | `POST`  | ```/api/result/```      | *required*   |
 
 ### Development
-- [ ] Remove invalid characters after token is decrypted
+- [x] Remove invalid characters after token is decrypted
 - [ ] Complete the API documentation
 - [ ] Fix JSON response format
 - [ ] Update status of calculations accordingly
