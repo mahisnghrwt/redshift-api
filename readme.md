@@ -10,7 +10,7 @@
 ---------------------
 
 #### Endpoints
----------------------
+===============
 | status                    | description             |           | method  | endpoint          | authentication |
 | ------------------------- | ----------------------  | --------- | ------- | ----------------- | -------------- |
 |   :white_check_mark:      | Submit calculations     |           | POST    | /api/             | REQUIRED       |
