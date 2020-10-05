@@ -20,3 +20,8 @@
 |   :white_check_mark:      | Get Calculation status  |           | `POST`  | ```/api/status/```      | *required*   |
 |   :black_square_button:   | Get Redshift result     | [single]  | `GET`   | ```/api/result/xx```   |                |
 |   :black_square_button:   | Get Redshift result     |           | `POST`  | ```/api/result/```      | *required*   |
+
+### Development
+---------------------
+- [ ] Fix JSON response format
+- [ ] Update status of calculations accordingly
