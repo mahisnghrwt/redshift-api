@@ -2,7 +2,7 @@
 require_once __DIR__ . '/vendor/autoload.php';
 require_once ('database.php');
 require_once('calculator.php');
-require_once(__DIR__ . '/config/rabbitmq-config.php');
+require_once(__DIR__ . '/__config.php');
 
 $connection = new \PhpAmqpLib\Connection\AMQPStreamConnection(RABBITMQ_HOST, RABBITMQ_PORT, RABBITMQ_USERNAME, RABBITMQ_PASSWORD);
 $channel = $connection->channel();
@@ -23,32 +23,30 @@ echo ' [*] Waiting for messages. To exit press CTRL+C', "\n";
 
 //Callback function
 $callback = function($msg){
-    //echo " [x] Received ", $msg->body, "\n";
     $job_s = json_decode($msg->body);
 
     //Get the script name from the database
     $database = new Database_mysqli();
-    $fprefix = $job_s[0]->galaxyID;
-    $scriptPath = $job_s[0]->scriptPath;
+    $file_prefix = $job_s[0]->galaxy_id;
+    $script_path = $job_s[0]->script_path;
 
-    //TODO: Mark the calculations as PROCESSING in the redshift table
+    //Mark these calculations as PROCESSING in database
+    $database->UpdateStatus($job_s, "PROCESSING");
 
     //Perform the calculation, get the result as an array
-    $result_s = Calculator::PerformCalc($job_s, $scriptPath, $fprefix);
+    $result_s = Calculator::PerformCalc($job_s, $script_path, $file_prefix);
     $result_s_size = count($result_s);
 
     //Add a new key-value pair of 'result' to the job_s array
     for ($i = 0; $i < $result_s_size; $i++) {
         $job_s[$i]->result = $result_s[$i];
     }
-
-    
+   
     echo json_encode($job_s, JSON_PRETTY_PRINT);
 
-    //Enter the result into the database
-    $database->InsertResult($job_s);
-
-    //TODO: Mark the calculations as COMPLETED in the redshift table
+    //Update the database with result and status
+    $database->InsertIntoCalculations($job_s);
+    $database->UpdateStatus($job_s, "COMPLETED");
 
     echo " [x] Done", "\n";
     $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);

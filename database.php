@@ -1,5 +1,5 @@
 <?php
-require_once(__DIR__ . '/config/database-config.php');
+require_once(__DIR__ . '/__config.php');
 
 class Database_mysqli {
     //MySQLi Connection object
@@ -18,185 +18,99 @@ class Database_mysqli {
         $connection->close();
     }
 
-
-    /*
-    Database get values
-    Database insert values (get AI)
-    Database Find
-    */
-    public function InsertResult($data) {
-        $size = count($data);
-        $sql_prefix = "INSERT INTO `calculations`(`galaxy_id`, `method_id`, `redshift_result`) VALUES";
-        $values = "";
-
-        for ($i = 0; $i < $size - 1; $i++) {
-            $values .= "({$data[$i]->galaxyID}, {$data[$i]->methodID}, {$data[$i]->result}), ";
+    public function InsertIntoCalculations($calculations) {
+        $sql = "INSERT INTO calculations(galaxy_id, method_id, redshift_result) VALUES ";
+        foreach($calculations as $x) {
+            $sql .= "({$x->galaxy_id}, {$x->method_id}, {$x->result}), ";
         }
+        $sql = substr($sql, 0, strlen($sql) - 2);
 
-        $values .= "({$data[$size - 1]->galaxyID}, {$data[$size - 1]->methodID}, {$data[$size - 1]->result})";
-
-
-        $sql = $sql_prefix . $values;
-        if ($this->connection->query($sql) === TRUE) {
-
-        }
-        else {
-            //echo "Error: " . $this->connection->error;
-        }
-
+        if ($this->connection->query($sql) === FALSE)
+            echo $this->connection->error;
     }
 
-    public function checkUserExists($user_email) {
-        $sql = "SELECT 'id' FROM users WHERE email = '$user_email'";
+    public function CheckUserExists($email) {
+        $email = $this->connection->escape_string($email);
+        $sql = "SELECT 'id' FROM users WHERE email = '$email'";
         if ($result = $this->connection->query($sql)) {
             if ($result->num_rows == 1)
                 return true;
             else
                 return false;
         }
-        else
-            //echo "Some problem with the query!" . PHP_EOL;
+
         return false;
     }
+
+    function InsertIntoRedshift($data, $job_id, $status, $size = -1) {
+        $first_id = -1;
+        $size = $size == -1 ? count($data): $size;
     
-    function insertRedshift($data, $jobID) {
-        $firstID = -1;
-        $status = "pending";
-        $size = count($data);
-        $sql_prefix = "INSERT INTO `redshifts`(`assigned_calc_id`, `optical_u`, `optical_v`, `optical_g`, `optical_r`, `optical_i`, `optical_z`, `infrared_three_six`, `infrared_four_five`, `infrared_five_eight`, `infrared_eight_zero`, `infrared_J`, `infrared_H`, `infrared_K`, `radio_one_four`, `job_ID`, `status`) VALUES";
-        $values = "";
+        $columns = array("assigned_calc_id", "optical_u", "optical_v", "optical_g", "optical_r", "optical_i", "optical_z", "infrared_three_six",
+        "infrared_four_five", "infrared_five_eight", "infrared_eight_zero", "infrared_j", "infrared_h", "infrared_k", "radio_one_four",
+        "status", "job_id");
 
-        for ($i = 0; $i < $size - 1; $i++) {
-            $values .= "({$data[$i]->assigned_calc_ID}, {$data[$i]->optical_u}, {$data[$i]->optical_v}, {$data[$i]->optical_g}, {$data[$i]->optical_r}, {$data[$i]->optical_i},
-            {$data[$i]->optical_z}, {$data[$i]->infrared_three_six}, {$data[$i]->infrared_four_five}, {$data[$i]->infrared_five_eight}, {$data[$i]->infrared_eight_zero}, {$data[$i]->infrared_J}, {$data[$i]->infrared_H}, {$data[$i]->infrared_K}, {$data[$i]->radio_one_four}, {$jobID}, 'pending'), ";
+        $sql = "INSERT INTO redshifts (";
+        foreach ($columns as $c) {
+            $sql .= $c . ", ";
+        }
+        $sql = substr($sql, 0, strlen($sql) - 2);
+        $sql .= ") VALUES ";
+
+        for ($i = 0; $i < $size; $i++) {
+            $sql .= "({$data[$i]->assigned_calc_ID}, {$data[$i]->optical_u}, {$data[$i]->optical_v}, {$data[$i]->optical_g}, {$data[$i]->optical_r}, {$data[$i]->optical_i},
+            {$data[$i]->optical_z}, {$data[$i]->infrared_three_six}, {$data[$i]->infrared_four_five}, {$data[$i]->infrared_five_eight}, {$data[$i]->infrared_eight_zero},
+            {$data[$i]->infrared_J}, {$data[$i]->infrared_H}, {$data[$i]->infrared_K}, {$data[$i]->radio_one_four}, '{$status}', {$job_id}), ";
         }
 
-        $values .= "({$data[$size - 1]->assigned_calc_ID}, {$data[$size - 1]->optical_u}, {$data[$size - 1]->optical_v}, {$data[$size - 1]->optical_g}, {$data[$size - 1]->optical_r}, {$data[$size - 1]->optical_i},
-        {$data[$size - 1]->optical_z}, {$data[$size - 1]->infrared_three_six}, {$data[$size - 1]->infrared_four_five}, {$data[$size - 1]->infrared_five_eight}, {$data[$size - 1]->infrared_eight_zero}, {$data[$size - 1]->infrared_J}, {$data[$size - 1]->infrared_H}, {$data[$size - 1]->infrared_K}, {$data[$size - 1]->radio_one_four}, {$jobID}, 'pending')";
-
-
-        $sql = $sql_prefix . $values;
+        $sql = substr($sql, 0, strlen($sql) - 2);
         if ($this->connection->query($sql) === TRUE) {
-            $firstID =  $this->connection->insert_id;
+            $first_id =  $this->connection->insert_id;
         }
         else {
-            //echo "Error: " . $this->connection->error;
+            //TODO: this must be removed
+            echo "Error: " . $this->connection->error;
         }
 
-        return $firstID;
+        return $first_id;
     }
 
-    function Insert($table, $columns, $values, $length, $defaults = NULL) {
-        $firstID = -1;
-        $columnsCount = count($columns);
+    function SelectStatus($calculation_ids) {
+        $status = array();
+        $l = count($calculation_ids);
 
-        //TODO: Merge the defaults into columns
-
-        if ($columnsCount < $length)
-            $length = $columnCount;
-        $valuesCount = count($values);
-        $sql = "INSERT INTO {$table} (";
-
-        for ($i = 0; $i < $columnsCount; $i++) {
-            $sql .= $columns[$i];
-            if ($i == $columnsCount - 1) {
-                $sql .= ") ";
-            }
-            else {
-                $sql .= ", ";
-            }
+        $sql = "SELECT calculation_id, status from redshifts where calculation_id IN (";
+        for ($i = 0; $i < $l; $i++) {
+            $sql .= (string)$calculation_ids[$i] . ", ";
         }
-        $sql .= "values ";
-        for ($i = 0; $i < $length; $i++) {
-            $sql .= "(";
-            for ($j = 0; $j < $columnsCount; $j++) {
-                $val = "";
-                if (!array_key_exists($columns[$j], $values[$i]))
-                    $val = $defaults[$columns[$j]];
-                else
-                    $val = $values[$i]->{$columns[$j]};
+        $sql = substr($sql, 0, strlen($sql) - 2);
+        $sql .= ")";
 
-                if (is_string($val)) {
-                    $sql .= "'" . $val . "'";
-                }
-                else
-                    $sql .= $val;
-                if ($j < $columnsCount - 1) {
-                    $sql .= ", ";
-                }
-            }
-            if ($i < $length - 1) {
-                $sql .= "), ";
-            }
-            else {
-                $sql .= ")";
-            }
-        }
-
-        if ($this->connection->query($sql) === TRUE) {
-            $firstID =  $this->connection->insert_id;
-        }
-        else {
-            echo "Something went wrong!" . $this->connection->error;
-        }
-
-        return $firstID;
-    }
-
-    function Select($table, $columns, $where, $key) {
-        $result = array();
-
-        $sqlPrefix = "SELECT ";
-        $sqlMid = "";
-        $sqlSuffix = "from {$table}";
-        $columnCount = count($columns);
-        for ($i = 0; $i < $columnCount; $i++) {
-            $sqlMid .= $columns[$i];
-            if ($i != $columnCount - 1) {
-                $sqlMid .= ", ";
-            }
-            else {
-                $sqlMid .= " ";
-            }
-        }
-
-        $sql = $sqlPrefix . $sqlMid . $sqlSuffix;
-
-        if ($where != NULL) {
-            foreach ($where as $key => $vals) {
-                $sql .= " WHERE {$key} IN (";
-                $l = count($vals);
-                for ($i = 0; $i < $l; $i++) {
-                    $sql .= $vals[$i];
-                    if ($i < $l - 1) { 
-                        $sql .= ", ";
-                    }
-                    else
-                        $sql .= ")";
-                }
-            }
-        }
-
-        // echo $sql;
-
-        $mysqliResult = $this->connection->query($sql);
-
-        if ($mysqliResult == NULL || $mysqliResult->num_rows == 0) {
+        $sqlResult = $this->connection->query($sql);
+        if ($sqlResult == NULL || $sqlResult->num_rows == 0) {
             return NULL;
         }
-        
-        if ($key == NULL) {
-            while($row = $mysqliResult->fetch_assoc()) {
-                array_push($result, $row);
-            }
-        }
-        else {
-            while($row = $mysqliResult->fetch_assoc()) {
-                $result[$row[$key]] = $row;
-            }
+
+        while($row = $sqlResult->fetch_assoc()) {
+            $status[$row['calculation_id']] = $row['status'];
         }
 
-        return $result;
+        return $status;
+    }
+
+    function SelectSingleStatus($calculation_id) {
+        $status = "";
+        $sql = "SELECT calculation_id, status from redshifts where calculation_id = {$calculation_id} limit 1";
+        $sqlResult = $this->connection->query($sql);
+        if ($sqlResult == NULL || $sqlResult->num_rows == 0) {
+            return NULL;
+        }
+
+        while($row = $sqlResult->fetch_assoc()) {
+            $status = $row['status'];
+        }
+
+        return $status;
     }
 
     function GetMethodList() {
@@ -213,5 +127,20 @@ class Database_mysqli {
 
         return $method_s;
     }
+
+    function UpdateStatus($calculations, $status) {
+        $sql = "UPDATE redshifts SET status = '{$status}' WHERE calculation_id IN (";
+        foreach ($calculations as $x) {
+            $sql .= $x->galaxy_id . ", ";
+        }
+
+        $sql = substr($sql, 0, strlen($sql) - 2);
+        $sql .= ")";
+
+        if ($this->connection->query($sql) === FALSE) {
+            echo $this->connection->error;
+        }
+    }
+
 }
 ?>

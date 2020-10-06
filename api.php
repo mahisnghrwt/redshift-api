@@ -7,7 +7,7 @@ require_once('utility.php');
 require_once('error-handler.php');
 
 define("batch_size", 100);
-define("CALC_IDS", "calculation_ids");
+define("CALC_IDS", "calculation_id");
 
 define("HEADER_400", "HTTP/1.0 400 Bad Request");
 define("HEADER_401", "HTTP/1.0 401 Unauthorized");
@@ -15,7 +15,7 @@ define("REDSHIFT_COLS", array("optical_u", "optical_v", "optical_g", "optical_r"
 
 
 //kinda Global Variables
-$metaData = null;
+$metadata = null;
 $methodList = null;
 $batchCounter = -1;
 $firstCalcID = -1;
@@ -38,17 +38,20 @@ if ($json == NULL)
 $length = count($json);
 
 if ($length < 2)
-    Utility::Die(HEADER_400, $response, new ErrorObject("Bad JSON", "Partial JSON."));
+    Utility::Die(HEADER_400, $response, new ErrorObject("Bad JSON", "Unexpected JSON."));
 
 if ($isGuest && $length > 2)
     Utility::Die(HEADER_401, $response, new ErrorObject("Unauthorized", "Guest can only perform once calculation per request."));
 
-if (!$isGuest)
-    if (!$authenticator->Check(Utility::ExtractToken($json)))
-        Utility::Die(HEADER_401, $response, new ErrorObject("Unauthorized", "Invalid token."));
+if (!$isGuest) {
+    if (!isset($json[$length - 1]->token))
+        Utility::Die(HEADER_401, $response, new ErrorObject("Unauthorized", "Token not found!"));
+    if (!$authenticator->Check($json[$length - 1]->token))
+        Utility::Die(HEADER_401, $response, new ErrorObject("Unauthorized", "Invalid token!"));
+}
 
-$metaData = Utility::ExtractMetaData($json[$length - 1], $response, $isGuest);
-if ($metaData == NULL)
+$metadata = Utility::ExtractMetaData($json[$length - 1], $response, $isGuest);
+if ($metadata == NULL)
     Utility::Die(HEADER_400, $response);
 /*
 Check whether all the necessary arguments are passed in json script
@@ -60,22 +63,22 @@ $methodList = $database->GetMethodList();
 //Get list of all the methods
 $master_job_s = array();
 
-$t = count($metaData[METHODS]);
+$t = count($metadata[METHODS]);
 /* Check if the requested methods exists */
 for ($i = 0; $i < $t; $i++) {
-    if (!array_key_exists($metaData[METHODS][$i], $methodList)) {
-        ErrorHandler::LogError($response, new ErrorObject("Invalid Method", "Method with id {$metaData[METHODS][$i]} not found!"));
-        unset($metaData[METHODS][$i]);
+    if (!array_key_exists($metadata[METHODS][$i], $methodList)) {
+        ErrorHandler::LogError($response, new ErrorObject("Invalid Method", "Method with id {$metadata[METHODS][$i]} not found!"));
+        unset($metadata[METHODS][$i]);
     }
 }
 unset($t);
 
-if (count($metaData[METHODS]) <= 0) {
+if (count($metadata[METHODS]) <= 0) {
     Utility::Die(HEADER_400, $response);
 }
 
 //All the requested methods
-for ($j = 0; $j < count($metaData[METHODS]); $j++) {
+for ($j = 0; $j < count($metadata[METHODS]); $j++) {
     for ($i = 0; $i < $length - 1; $i++) {
         //array_push($query_s, $json[$i]);
         $args = Utility::GetArgs($json[$i], $response);
@@ -88,15 +91,17 @@ for ($j = 0; $j < count($metaData[METHODS]); $j++) {
             $batchCounter++;
             $master_job_s[$batchCounter] = array();
         }
-        array_push($master_job_s[$batchCounter], array("galaxyID" => -1, "methodID" => $metaData[METHODS][$j], "scriptPath" => $methodList[$metaData[METHODS][$j]], "args" => $args));
+        array_push($master_job_s[$batchCounter], array("method_id" => $metadata[METHODS][$j], "script_path" => $methodList[$metadata[METHODS][$j]], "args" => $args));
     }
 }
 
-$defaults = array("status" => "SUBMITTED", "job_id" => $metaData["job_id"]);
-$firstCalcID = $database->Insert("redshifts", REDSHIFT_COLS, $json, $length - 1, $defaults);
+if (count($master_job_s) == 0)
+    Utility::Die(HEADER_400, $response);
+
+$firstCalcID = $database->InsertIntoRedshift($json, $metadata["job_id"], "SUBMITTED", $length - 1);
 
 //Insert the requests into the database
-//$firstCalcID = $database->insertRedshift($query_s, $metaData["job_id"]);
+//$firstCalcID = $database->insertRedshift($query_s, $metadata["job_id"]);
 $calcID_s = array(); //Will store all calculationIDs in it
 $realID = 0;
 $idCounter = 0;
@@ -110,7 +115,7 @@ for ($i = 0; $i < count($master_job_s); $i++) {
         $realID = $firstCalcID + $idCounter;
         $idCounter++;
         //Update the calculationID inside job_s array
-        $master_job_s[$i][$j]["galaxyID"]= $realID;
+        $master_job_s[$i][$j]["galaxy_id"]= $realID;
         //Push the calculationID to the calcID_s array
         array_push($calcID_s, $realID);
     }

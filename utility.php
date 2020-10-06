@@ -3,50 +3,50 @@ define("METHODS", "methods");
 define("TOKEN", "token");
 define("JOB_ID", "job_ID");
 
+require_once('error-handler.php');
 
 class Utility {
     public static function GetArgs($arr, &$response) {
-        $validation = array("optical_u" => "float", "optical_v" => "float",
-        "optical_g" => "float", "optical_r" => "float",
-        "optical_i" => "float", "optical_z" => "float",
-        "infrared_three_six" => "float", "infrared_four_five" => "float",
-        "infrared_five_eight" => "float", "infrared_eight_zero" => "float",
-        "infrared_J" => "float", "infrared_H" => "float",
-        "infrared_K" => "float", "radio_one_four" => "float");
+        $fields = array("optical_u" => "float", "optical_v" => "float", "optical_g" => "float", "optical_r" => "float", "optical_i" => "float", "optical_z" => "float",
+        "infrared_three_six" => "float", "infrared_four_five" => "float", "infrared_five_eight" => "float", "infrared_eight_zero" => "float",
+        "infrared_J" => "float", "infrared_H" => "float", "infrared_K" => "float", "radio_one_four" => "float");
+
         $result = array();
 
-        foreach($validation as $key => $value) {
-            $isValid = true;
-            switch($value) {
-                case "string":
-                    if (!is_string($arr->$key)) {
-                        $isValid = false;
-                    }
-                break;
-                case "int":
-                    if (!is_int($arr->$key)) {
-                        $isValid = false;
-                    }
-                break;    
-                case "float":
-                    if (!is_float($arr->$key)) {
-                        $isValid = false;
-                    }
-                break; 
-                default:
-                    $isValid =  false;
-            }
-
-            if (!$isValid) {
-                ErrorHandler::LogError($response, new ErrorObject("Arg error", "{$arr->$key} is in incorrect format."));
-                //echo $key . " in invalid data-type";
-                return NULL;
+        $valid_arg = true;
+        $is_valid = false;
+        foreach($fields as $key => $value) {
+            $is_valid = true;
+            if (!isset($arr->{$key})) {
+                ErrorHandler::LogError($response, new ErrorObject("Invalid argument", "{$key} not found!"));
+                $valid_arg = false;
+                continue;
             }
             else {
-                $result[$key] = $arr->$key;
+                switch($value) {
+                    case "float":
+                        $is_valid = is_float($arr->{$key}) ? true : false;
+                        break; 
+                    case "int":
+                        $is_valid = is_int($arr->{$key}) ? true : false;
+                        break; 
+                    case "string":
+                        $is_valid = is_string($arr->{$key}) ? true : false;
+                        break; 
+                    default:
+                        $is_valid = false;
+                }
+
+                if (!$is_valid) {
+                    $valid_arg = false;
+                    ErrorHandler::LogError($response, new ErrorObject("Invalid argument", "Expected {$arr->$key} to be {$arr->value}."));
+                }
+                else
+                    $result[$key] = $arr->{$key};
             }
         }
-        return $result;
+
+        return $valid_arg ? $result : NULL;
     }
 
     public static function ExtractToken($json) {
@@ -62,36 +62,23 @@ class Utility {
         return $json[$length - 1]->token;
     }
 
-    public static function ExtractMetaData($argMetaData, &$response, $isGuest = false) {
-        $metaData = array();
+    public static function ExtractMetaData($metadata_, &$response, $isGuest = false) {
+        $metadata = array();
+        $required = array("job_id", "methods", "token");
+        $isBroken = false;
 
-        if (array_key_exists("job_id", $argMetaData)) {
-            $metaData["job_id"] = $argMetaData->job_id;
-        }
-        else {
-            array_push($response->ERRORS, new ErrorObject("Invalid MetaData", "job_id not passed."));
-            return null;
-        }
-
-        if (array_key_exists("methods", $argMetaData)) {
-            $metaData["methods"] = $argMetaData->methods;
-        }
-        else {
-            array_push($response->ERRORS, new ErrorObject("Invalid MetaData", "methods not passed."));
-            return null;
-        }
-
-        if (!$isGuest) {
-            if (array_key_exists("token", $argMetaData)) {
-                $metaData["token"] = $argMetaData->token;
-            }
+        foreach ($required as $prop) {
+            if (isset($metadata_->{$prop}))
+                $metadata[$prop] = $metadata_->{$prop};
             else {
-                array_push($response->ERRORS, new ErrorObject("Invalid MetaData", "token not passed."));
-                return null;
+                if ($isGuest &&  $prop == "token")
+                    continue;
+                $isBroken = true;
+                ErrorHandler::LogError($response, new ErrorObject("Invalid metadata", "{$prop} not found!"));
             }
         }
 
-        return $metaData;
+        return $isBroken ? null: $metadata;
     }
 
     public static function Die($httpHeader, $response, $error = NULL) {

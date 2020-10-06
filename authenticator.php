@@ -1,6 +1,6 @@
 <?php
 require_once('database.php');
-require_once(__DIR__ . '/config/authenticator-config.php');
+require_once(__DIR__ . '/__config.php');
 
 
 class Authenticator {
@@ -14,8 +14,8 @@ class Authenticator {
         if ($token == NULL) return FALSE;
         //Not authenticating, this must be removed.
         $isValid = true;
-        $user_email = $this->_extract($token);
-        return $this->database->checkUserExists($user_email);
+        $email = $this->_extract($token);
+        return $this->database->CheckUserExists($email);
     }
 
     private function _extract($token) {

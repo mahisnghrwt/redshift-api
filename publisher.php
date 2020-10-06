@@ -1,6 +1,6 @@
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
-require_once(__DIR__ . '/config/rabbitmq-config.php');
+require_once(__DIR__ . '/__config.php');
 
 class Publisher {
     //Declare the channel, it will be use to send msgs
