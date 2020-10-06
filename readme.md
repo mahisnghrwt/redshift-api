@@ -21,6 +21,6 @@
 ### Development
 - [x] Remove invalid characters after token is decrypted
 - [ ] Complete the API documentation
-- [ ] Fix JSON response format
-- [ ] Update status of calculations accordingly
+- [x] Fix JSON response format
+- [x] Update status of calculations accordingly
 - [ ] Generate graphs
