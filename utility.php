@@ -6,10 +6,10 @@ define("JOB_ID", "job_ID");
 require_once('error-handler.php');
 
 class Utility {
-    public static function GetArgs($arr, &$response) {
-        $fields = array("optical_u" => "float", "optical_v" => "float", "optical_g" => "float", "optical_r" => "float", "optical_i" => "float", "optical_z" => "float",
-        "infrared_three_six" => "float", "infrared_four_five" => "float", "infrared_five_eight" => "float", "infrared_eight_zero" => "float",
-        "infrared_J" => "float", "infrared_H" => "float", "infrared_K" => "float", "radio_one_four" => "float");
+    public static function GetArgs($arr, &$errors) {
+        $fields = array("optical_u" => "numeric", "optical_v" => "numeric", "optical_g" => "numeric", "optical_r" => "numeric", "optical_i" => "numeric", "optical_z" => "numeric",
+        "infrared_three_six" => "numeric", "infrared_four_five" => "numeric", "infrared_five_eight" => "numeric", "infrared_eight_zero" => "numeric",
+        "infrared_J" => "numeric", "infrared_H" => "numeric", "infrared_K" => "numeric", "radio_one_four" => "numeric");
 
         $result = array();
 
@@ -18,7 +18,7 @@ class Utility {
         foreach($fields as $key => $value) {
             $is_valid = true;
             if (!isset($arr->{$key})) {
-                ErrorHandler::LogError($response, new ErrorObject("Invalid argument", "{$key} not found!"));
+                array_push($errors, new ErrorObject("Invalid argument", "{$key} not found!"));
                 $valid_arg = false;
                 continue;
             }
@@ -33,13 +33,18 @@ class Utility {
                     case "string":
                         $is_valid = is_string($arr->{$key}) ? true : false;
                         break; 
+                    case "numeric":
+                        $is_valid = is_numeric($arr->{$key}) ? true : false;
+                        if ($is_valid)
+                            $arr->{$key} = (float)$arr->{$key};
+                        break; 
                     default:
                         $is_valid = false;
                 }
 
                 if (!$is_valid) {
                     $valid_arg = false;
-                    ErrorHandler::LogError($response, new ErrorObject("Invalid argument", "Expected {$arr->$key} to be {$arr->value}."));
+                    array_push($errors, new ErrorObject("Invalid argument", "Expected {$key} to be {$value}."));
                 }
                 else
                     $result[$key] = $arr->{$key};
@@ -81,27 +86,12 @@ class Utility {
         return $isBroken ? null: $metadata;
     }
 
-    public static function Die($httpHeader, $response, $error = NULL) {
+    public static function Die($reponse_code, $response, $error = NULL) {
         if ($error != NULL)
             array_push($response[ERRORS], $error);
-
-        header($httpHeader);
+        http_response_code($reponse_code);
         echo json_encode($response, JSON_PRETTY_PRINT);
         exit();
-    }
-
-    public static function Uniformize(&$data, $length, $regex, $castTo) {
-        for ($i = 0; $i < $length; $i++) {
-            if (preg_match($regex, $data[$i]) == 0) {
-                unset($i);
-            }
-            else {
-                switch ($castTo) {
-                    case "int":
-                        $data[$i] = (int)$data[$i];
-                }
-            }
-        }
     }
 };
 ?>

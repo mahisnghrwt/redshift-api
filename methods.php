@@ -1,17 +1,14 @@
 <?php
-require_once("Database.php");
+require_once("database.php");
 
 $database = new Database_mysqli();
+if ($database == NULL)
+	http_response_code(500);
 
-$tableName = "methods";
-$columns = array("method_id", "method_name");
-
-$methods = $database->Select($tableName, $columns);
-
+$methods = $database->GetMethodList();
 if ($methods == NULL) {
-	echo "Something went wrong!";
+	echo "No methods found!";
 	exit();
 }
-
 echo json_encode($methods, JSON_PRETTY_PRINT);
 ?>
