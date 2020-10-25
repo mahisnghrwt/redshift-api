@@ -51,6 +51,8 @@ $isAdmin = true ? $auhtorizationLevel === 1: false;
 
 # get the list of all calculation_id => status, for the user
 $status_s = $database->SelectAllStatus($isAdmin === TRUE ? NULL: $email);
+// echo json_encode($status_s);
+// exit();
 
 # iterate over goodCalculationID, copy the ones requested by the user
 foreach ($goodCalculationIDs as $x) {

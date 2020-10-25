@@ -36,12 +36,14 @@ $callback = function($msg){
 
     //Mark these calculations as PROCESSING in database
     $database->UpdateStatus($job_s, "PROCESSING");
+    $database->UpdateStatus_((array)$job_s, "PROCESSING");
 
     //Perform the calculation, get the result as an array
     $result_s = Calculator::PerformCalc($script_path, $job_s);
     
     if ($result_s != NULL) {
         $database->UpdateStatus($job_s, "COMPLETED");
+        $database->UpdateStatus_((array)$job_s, "COMPLETED");
         $input_size = count($job_s);
         $result_s_size = 0;
         if (!is_null($result_s["redshift_result"]))
@@ -69,6 +71,7 @@ $callback = function($msg){
     else {
         if ($msg->delivery_info['redelivered'] == 1) {
             $database->UpdateStatus($job_s, "FAILED");
+            $database->UpdateStatus_((array)$job_s, "FAILED");
         }
         else {
             echo "Error occured" . PHP_EOL;

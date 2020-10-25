@@ -98,26 +98,27 @@ class Database_mysqli {
         if ($this->connection->query($sql) === TRUE) {
             $first_id =  $this->connection->insert_id;
         }
-        else {
-            //TODO: this must be removed
-            echo "Error: " . $this->connection->error;
-        }
 
         return $first_id;
     }
 
     function SelectAllStatus($user_email) {
         $result = array();
-        $sql = "SELECT redshifts.calculation_id as 'calculation_id', redshifts.status as 'status' FROM redshifts, users, jobs WHERE redshifts.job_id = jobs.job_id AND jobs.user_id = users.id AND users.email = '{$user_email}'";
+        $sql = "SELECT status.calculation_id as 'calculation_id', status.method_id as 'method_id', status.status as 'status', status.error_log as 'error_log' FROM status, redshifts, users, jobs WHERE status.calculation_id = redshifts.calculation_id AND  redshifts.job_id = jobs.job_id AND jobs.user_id = users.id AND users.email = '{$user_email}'";
         if (is_null($user_email))
-            $sql = "SELECT redshifts.calculation_id as 'calculation_id', redshifts.status as 'status' FROM redshifts";
+            $sql = "SELECT status.calculation_id as 'calculation_id', status.method_id as 'method_id', status.status as 'status', status.error_log as 'error_log'  FROM status";
        
         $sqlResult = $this->connection->query($sql);
         if ($sqlResult == NULL || $sqlResult->num_rows == 0)
             return array();
 
-        while($row = $sqlResult->fetch_assoc())
-            $result[$row['calculation_id']] = $row['status'];
+        while($row = $sqlResult->fetch_assoc()) {
+            if (!isset($result[$row['calculation_id']]))
+                $result[$row['calculation_id']] = array();
+
+            if (is_array($result[$row['calculation_id']]))
+                $result[$row['calculation_id']][$row["method_id"]] = array("status" => $row['status'], "error_log" => $row['error_log']);
+        }
 
         return $result;
     }
@@ -174,18 +175,33 @@ class Database_mysqli {
         return $method_s;
     }
 
-    function UpdateStatus($calculations, $status) {
-        $sql = "UPDATE redshifts SET status = '{$status}' WHERE calculation_id IN (";
-        foreach ($calculations as $x) {
-            $sql .= $x->galaxy_id . ", ";
+    function InsertIntoStatus($data, $status) {
+        $sql  = "INSERT INTO status(calculation_id, method_id, status) VALUES ";
+        foreach($data as $x) {
+            $cid = $x['galaxy_id'];
+            $mid = $x['method_id'];
+            $sql .= "({$cid}, {$mid}, '{$status}'), ";
         }
 
         $sql = substr($sql, 0, strlen($sql) - 2);
-        $sql .= ")";
 
-        if ($this->connection->query($sql) === FALSE) {
+        if ($this->connection->query($sql) !== TRUE)
             echo $this->connection->error;
+    }
+
+    function UpdateStatus_($data, $status) {
+        $mid = $data[0]->method_id;
+        $sql = "UPDATE status SET status = '{$status}' WHERE calculation_id IN (";        
+        foreach($data as $x) {
+            $cid = $x->galaxy_id;
+            $sql .= "{$cid}, ";
         }
+
+        $sql = substr($sql, 0, strlen($sql) - 2);
+        $sql .= ") AND method_id = {$mid}";
+
+        if ($this->connection->query($sql) !== TRUE)
+            echo $this->connection->error;
     }
 
     function GetAuthorizationLevel($email) {
@@ -201,6 +217,20 @@ class Database_mysqli {
         }
 
         return $authorizationLevel;
+    }
+
+    function UpdateStatus($calculations, $status) {
+        $sql = "UPDATE redshifts SET status = '{$status}' WHERE calculation_id IN (";
+        foreach ($calculations as $x) {
+            $sql .= $x->galaxy_id . ", ";
+        }
+
+        $sql = substr($sql, 0, strlen($sql) - 2);
+        $sql .= ")";
+
+        if ($this->connection->query($sql) === FALSE) {
+            echo $this->connection->error;
+        }
     }
 }
 ?>

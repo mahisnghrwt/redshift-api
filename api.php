@@ -101,8 +101,11 @@ if (count($master_job_s) == 0)
     Utility::Die(400, $response);
 
 //Insert all the requested calculations into the database, and set their 'status' as 'SUBMITTED'
-//TODO: invalid requests are also being push to the database?
 $firstCalcID = $database->InsertIntoRedshift($json, $metadata["job_id"], "SUBMITTED", $length - 1);
+if ($firstCalcID === -1) {
+    ErrorHandler::LogError($response, new ErrorObject("Unkown error occured", "Error occured while inserting data into database.", NULL));
+    Utility::Die(400, $response);
+}
 
 $calcID_s = array(); //This store calculation ids for calculations with valid arguments
 $realID = 0;
@@ -122,6 +125,11 @@ for ($i = 0; $i < count($master_job_s); $i++) {
         if (!in_array($realID, $calcID_s))
             array_push($calcID_s, $realID);
     }
+}
+
+#Set the status as 'SUBMITTED'
+foreach($master_job_s as $x) {
+    $database->InsertIntoStatus($x, "SUBMITTED");
 }
 
 //Now publish the calculations in batches to the 'worker' processes
