@@ -1,0 +1,8 @@
+* [Home](/)
+* [Endpoints](/endpoints/)
+    * [/](/endpoints/api.md)
+    * [/guest](/endpoints/api-guest.md)
+    * [/status](/endpoints/status.md)
+    * [/result](/endpoints/result.md)
+    * [/system-load](/endpoints/system-load.md)
+    * [/methods](/endpoints/methods.md)
