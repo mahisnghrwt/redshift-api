@@ -11,3 +11,16 @@
 | Get calculation status                                | `POST`  | ```http://redshift-01.cdms.westernsydney.edu.au/redshift/api/status/```         | *yes*           |
 | Get calculation result                                | `POST`  | ```http://redshift-01.cdms.westernsydney.edu.au/redshift/api/result/```         | *yes*           |
 | Get system-load of the server                         | `POST`  | ```http://redshift-01.cdms.westernsydney.edu.au/redshift/api/system-load/```    | *yes*           |
+
+
+### Navigation
+* [Home](../README.md)
+* [Endpoints](README.md)
+    * [/](api.md)
+    * [/guest](api-guest.md)
+    * [/status](status.md)
+    * [/result](result.md)
+    * [/system-load](system-load.md)
+    * [/methods](methods.md)
+* [Authentication and Authorization](../authentication-authorization.md)
+* [Script](../script.md)
