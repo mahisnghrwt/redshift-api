@@ -1,11 +1,14 @@
+###### [Home](../) • [Endpoints](README.md) • [Authentication and Authorization](../authentication-authorization.md) • [Script](../script.md)
+---
+
 # /status `POST` `Content-Type: application/json`
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent bibendum lacinia aliquam. Integer lacinia blandit.
+Returns status of calculations, can be either 'SUBMITTED', 'PROCESSING', 'COMPLETED' or 'FAILED'.
 
 ### Authentication Token required?
 **Yes**
 
 ### Authorization
-* General User - Can only access the status for calculations submitted by the current user.
+* General User - Can only access the status for calculations submitted by themselves
 * Admin - Can access status for any user.
 
 ### Sample JSON Request
@@ -42,6 +45,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent bibendum lacin
 
 ```
 ### Attributes' Details
+
 | Attribute | Can be Null? | Datatype |
 |-----------|--------------|----------|
 | `calculation_ids` | *no* | `array<int>` |

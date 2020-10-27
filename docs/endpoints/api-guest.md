@@ -90,14 +90,3 @@ These are the measurements methods will use to estimate redshift.
 | Attribute | Can be Null? | Datatype |
 |-----------|--------------|----------|
 | `methods` | *no* | `array<int>` |
-
-### Sample cURL Command
-
-#### Windows
-```
-
-```
-
-#### Mac and Linux
-```
-```

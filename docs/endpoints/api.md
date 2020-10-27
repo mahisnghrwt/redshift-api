@@ -1,3 +1,6 @@
+###### [Home](../) • [Endpoints](README.md) • [Authentication and Authorization](../authentication-authorization.md) • [Script](../script.md)
+---
+
 # / `POST` `Content-Type: application/json`
 Performs multiple redshift estimation calculation within a single request.
 
@@ -94,14 +97,3 @@ These are the measurements methods will use to estimate redshift.
 | `methods` | *no* | `array<int>` |
 | `job_id` | *no* | `string` |
 | `token` | *no* | `string` |
-
-### Sample cURL Command
-
-#### Windows
-```
-
-```
-
-#### Mac and Linux
-```
-```

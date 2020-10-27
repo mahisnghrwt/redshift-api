@@ -1,6 +1,8 @@
-# /methods `GET` `Content-Type: application/json`
+###### [Home](../) • [Endpoints](README.md) • [Authentication and Authorization](../authentication-authorization.md) • [Script](../script.md)
+---
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent bibendum lacinia aliquam. Integer lacinia blandit.
+# /methods `GET` `Content-Type: application/json`
+Return list of available methods along with their description and id.
 
 ### Authentication Token required ?
 **No**
@@ -26,23 +28,6 @@ It returns an array available methods, containing `id`, `name` and `desc` for ev
         "id": "3",
         "name": "minus",
         "desc": "subtracting all measurements"
-    },
-    {
-        "id": "4",
-        "name": "Sum as graph",
-        "desc": "returns graph as sum of all measurements"
     }
 ]
-```
-
-### Sample cURL Command
-#### Windows
-
-```
-
-```
-
-#### Mac and Linux
-```
-
 ```
