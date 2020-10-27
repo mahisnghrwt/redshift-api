@@ -1,3 +1,6 @@
+[Home](/) • [Endpoints](/endpoints/README.md) • [Authentication and Authorization](/authentication-authorization.md) • [Script](/script.md)
+---
+
 # Script
 
 ### Conventions a 'Good' script follows
@@ -131,9 +134,3 @@ main()
     "galaxy_id": 28
 }]
 ```
-
-### Navigation Links
-* [Home](/)
-* [Endpoints](/endpoints/README.md)
-* [Authentication and Authorization](/authentication-authorization.md)
-* [Script](/script.md)
