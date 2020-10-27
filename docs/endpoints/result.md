@@ -58,7 +58,6 @@ Returns results of calculations.
 }
 ```
 ### Attributes' Details
-`:`, what does it mean? [click here](http://localhost:3000/#/endpoints/api-guest?id=attributes39-details)
 
 | Attribute | Can be Null? | Datatype |
 |-----------|--------------|----------|
