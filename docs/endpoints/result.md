@@ -1,3 +1,6 @@
+###### [Home](../) • [Endpoints](README.md) • [Authentication and Authorization](../authentication-authorization.md) • [Script](../script.md)
+---
+
 # /result `POST` `Content-Type: application/json`
 Returns results of calculations.
 

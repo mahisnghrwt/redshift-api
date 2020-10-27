@@ -1,3 +1,6 @@
+###### [Home](../) • [Endpoints](README.md) • [Authentication and Authorization](../authentication-authorization.md) • [Script](../script.md)
+---
+
 # /system-load `POST` `Content-Type: application/json`
 Returns the system-load metrics of the server. *Server should be Linux, otherwise this endpoint wouldn't work.* In response, `system-load` attribute is array containing three floats, which represents the system-load in last 1, 5 and 15 minutes respectively.
 
