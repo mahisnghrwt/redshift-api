@@ -7,11 +7,7 @@ Upon receival of new user request, it is then converted into batches and added t
 
 A registered user can later use `http://redshift-01.cdms.westernsydney.edu.au/redshift/api/result` endpoint to fetch the result using the ‘calculation_id’ received earlier when request was submitted. Furthermore, `http://redshift-01.cdms.westernsydney.edu.au/redshift/api/status` endpoint can be used to fetch the status of the calculation.
 
-
-### Navigation Bar
-[Home](/) -- [Endpoints](/endpoints/README.md) -- [Authentication and Authorization](/authentication-authorization.md) -- [Script](/script.md)
-
-### Navigation
+### Navigation Links
 * [Home](/)
 * [Endpoints](/endpoints/README.md)
 * [Authentication and Authorization](/authentication-authorization.md)
