@@ -11,7 +11,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent bibendum lacin
 ### Sample JSON Request
 ```
 {
-    "calculation_ids": [1, 2, 3],
+    "calculation_ids": [17, 18],
     "metadata": {
         "token": "k4edH5LHuJqDCe2ZRlbCuu9BX9NdAN0p\/b51OnUG2kQfxi"
     }
@@ -20,7 +20,39 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent bibendum lacin
 
 ### Sample JSON Response
 ```
-
+{
+    "errors": [],
+    "result": {
+        "17": [
+            {
+                "redshift_result": "105.00000000",
+                "redshift_alt_result": null,
+                "calculation_id": "17",
+                "method_id": "2"
+            },
+            {
+                "redshift_result": "105.00000000",
+                "redshift_alt_result": null,
+                "calculation_id": "17",
+                "method_id": "7"
+            }
+        ],
+        "18": [
+            {
+                "redshift_result": "105.00000000",
+                "redshift_alt_result": null,
+                "calculation_id": "18",
+                "method_id": "2"
+            },
+            {
+                "redshift_result": "105.00000000",
+                "redshift_alt_result": null,
+                "calculation_id": "18",
+                "method_id": "7"
+            }
+        ]
+    }
+}
 ```
 ### Attributes' Details
 `:`, what does it mean? [click here](http://localhost:3000/#/endpoints/api-guest?id=attributes39-details)

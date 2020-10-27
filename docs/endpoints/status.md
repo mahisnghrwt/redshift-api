@@ -11,10 +11,29 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent bibendum lacin
 ### Sample JSON Request
 ```
 {
-    "calculation_ids": [1, 2, 3],
-    "metadata": {
-        "token": "k4edH5LHuJqDCe2ZRlbCuu9BX9NdAN0p\/b51OnUG2kQfxi"
-    }
+    "status": {
+        "17": {
+            "2": {
+                "status": "COMPLETED",
+                "error_log": null
+            },
+            "7": {
+                "status": "COMPLETED",
+                "error_log": null
+            }
+        },
+        "18": {
+            "2": {
+                "status": "COMPLETED",
+                "error_log": null
+            },
+            "7": {
+                "status": "COMPLETED",
+                "error_log": null
+            }
+        }
+    },
+    "errors": []
 }
 ```
 
@@ -23,20 +42,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent bibendum lacin
 
 ```
 ### Attributes' Details
-`:`, what does it mean? [click here](http://localhost:3000/#/endpoints/api-guest?id=attributes39-details)
-
 | Attribute | Can be Null? | Datatype |
 |-----------|--------------|----------|
 | `calculation_ids` | *no* | `array<int>` |
 | `metadata:token` | *no* | `string` |
-
-### Sample cURL Command
-#### Windows
-```
-
-```
-
-#### Mac and Linux
-```
-
-```
