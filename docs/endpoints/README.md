@@ -1,0 +1,21 @@
+# Endpoints
+
+| Description                           | HTTP method  | Endpoint                                                                   | Authentication Token required? |
+| ----------------------                | ------- | -----------------                                                               | --------------- |
+| Submit single/multiple calculations as a General User/Admin                   | `POST`  | ```http://redshift-01.cdms.westernsydney.edu.au/redshift/api/```                | *yes*           |
+| Submit a single calculation as a Guest                | `POST`  | ```http://redshift-01.cdms.westernsydney.edu.au/redshift/api/guest/```          | *no*            |
+| Fetch list of available methods                       | `GET`   | ```http://redshift-01.cdms.westernsydney.edu.au/redshift/api/methods/```        | *no*            |
+| Get calculation status                                | `POST`  | ```http://redshift-01.cdms.westernsydney.edu.au/redshift/api/status/```         | *yes*           |
+| Get calculation result                                | `POST`  | ```http://redshift-01.cdms.westernsydney.edu.au/redshift/api/result/```         | *yes*           |
+| Get system-load of the server                         | `POST`  | ```http://redshift-01.cdms.westernsydney.edu.au/redshift/api/system-load/```    | *yes*           |
+
+
+### Navigation
+* [Home](/)
+* [Endpoints](/endpoints/)
+    * [/](/endpoints/api.md)
+    * [/guest](/endpoints/api-guest.md)
+    * [/status](/endpoints/status.md)
+    * [/result](/endpoints/result.md)
+    * [/system-load](/endpoints/system-load.md)
+    * [/methods](/endpoints/methods.md)
