@@ -1,7 +1,7 @@
-# Script
-
 ###### [Home](/) • [Endpoints](/endpoints/README.md) • [Authentication and Authorization](/authentication-authorization.md) • [Script](/script.md)
 ---
+
+# Script
 
 ### Conventions a 'Good' script follows
 * The first command-line argument is the path to the JSON file containing all the measurements for a calculation, the second argument is the path to directory where to output the file-based results.
