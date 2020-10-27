@@ -1,4 +1,4 @@
-# /api/guest `POST` `Content-Type: application/json`
+# /guest `POST` `Content-Type: application/json`
 Perform redshift estimation calculation as a Guest. Limited to a single calculation per `request`, however, the data isn't saved on the database.
 
 ### Authentication Token required ?
