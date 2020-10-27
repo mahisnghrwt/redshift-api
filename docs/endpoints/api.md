@@ -66,19 +66,11 @@ As a response, one of the attribute is `calculation_ids` array. Its each element
 ```
 
 ### Attributes' Details
-`:` represents the nested attributes, for example `data:assigned_calc_id`, represents
-```
-"data": {
-    "assigned_calc_id": "My Galaxy"   
-}
-```
-
 #### Measurements
 These are the measurements methods will use to estimate redshift.
 
 | Attribute | Can be Null? | Datatype |
 |-----------|--------------|----------|
-| `assigned_calc_id` | *yes* | `string` |
 | `optical_u` |  | `numeric` |
 | `optical_v` |  | `numeric` |
 | `optical_g` |  | `numeric` |
