@@ -13,10 +13,10 @@ define("RABBITMQ_QUEUE_NAME", "task_queue");
 
 //Database config
 define("servername", "localhost");
-define("username", "redshift");
-define("password", "3^v39Tx9");
+define("username", "");
+define("password", "");
 define("port", 3306);
-define("databasename", "db_redshift");
+define("databasename", "");
 
 //Router
 define('BASEPATH','/redshift/api/');
