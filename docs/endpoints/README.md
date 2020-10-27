@@ -11,11 +11,11 @@
 
 
 ### Navigation
-* [Home](/)
+* [Home](../)
 * [Endpoints](/endpoints/)
-    * [/](/endpoints/api.md)
-    * [/guest](/endpoints/api-guest.md)
-    * [/status](/endpoints/status.md)
-    * [/result](/endpoints/result.md)
-    * [/system-load](/endpoints/system-load.md)
-    * [/methods](/endpoints/methods.md)
+    * [/](api.md)
+    * [/guest](api-guest.md)
+    * [/status](status.md)
+    * [/result](result.md)
+    * [/system-load](system-load.md)
+    * [/methods](methods.md)
