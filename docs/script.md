@@ -85,6 +85,53 @@ def main():
 main()
 ```
 
+#### Sample JSON file, containing all measurements
+```
+[{
+    "method_id": 2,
+    "script_path": "scripts\/sum.py",
+    "args": {
+        "optical_u": 10,
+        "optical_v": 9786,
+        "optical_g": 79786,
+        "optical_r": 786,
+        "optical_i": 6,
+        "optical_z": 98,
+        "infrared_three_six": 897,
+        "infrared_four_five": 6,
+        "infrared_five_eight": 54,
+        "infrared_eight_zero": 876,
+        "infrared_J": 978,
+        "infrared_H": 876,
+        "infrared_K": 76,
+        "radio_one_four": 9768
+    },
+    "unique_id": "5f924ebf74cf8",
+    "galaxy_id": 27
+}, {
+    "method_id": 2,
+    "script_path": "scripts\/sum.py",
+    "args": {
+        "optical_u": 10,
+        "optical_v": 9786,
+        "optical_g": 79786,
+        "optical_r": 786,
+        "optical_i": 6,
+        "optical_z": 98,
+        "infrared_three_six": 897,
+        "infrared_four_five": 6,
+        "infrared_five_eight": 54,
+        "infrared_eight_zero": 876,
+        "infrared_J": 978,
+        "infrared_H": 876,
+        "infrared_K": 76,
+        "radio_one_four": 9768
+    },
+    "unique_id": "5f924ebf74d02",
+    "galaxy_id": 28
+}]
+```
+
 ### Navigation Links
 * [Home](/)
 * [Endpoints](/endpoints/README.md)
