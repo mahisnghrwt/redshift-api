@@ -9,47 +9,59 @@ Performs multiple redshift estimation calculation within a single request.
 * Admin
 
 ### Sample JSON Request
-Request must be an array, where the last element stores metadata, including `job_id`, `token` and `methods` specifying what methods to use for redshift estimation. All other element must contain the measurements required for the calculations, refer to the Attributes' Detail for more info.
+Request must be an array, where the last element stores metadata, refer to section 'metadata'. All other element must contain the measurements required for the calculations, refer to the 'measurements' for more info.
 ```
-{
-    "data": {
-        "assigned_calc_id": "My Galaxy",
-        "optical_u": 87,
-        "optical_v": 9786,
-        "optical_g": 79786,
-        "optical_r": 786,
-        "optical_i": 6,
-        "optical_z": 98,
-        "infrared_three_six": 897,
-        "infrared_four_five": 6,
-        "infrared_five_eight": 54,
-        "infrared_eight_zero": 876,
-        "infrared_J": 978,
-        "infrared_H": 876,
-        "infrared_K": 76,
-        "radio_one_four": 9768
+[
+    {
+        "assigned_calc_id": "Milky Way",
+        "optical_u": 1,
+        "optical_v": 2,
+        "optical_g": 3,
+        "optical_r": 4,
+        "optical_i": 5,
+        "optical_z": 6,
+        "infrared_three_six": 7,
+        "infrared_four_five": 8,
+        "infrared_five_eight": 9,
+        "infrared_eight_zero": 10,
+        "infrared_J": 11,
+        "infrared_H": 12,
+        "infrared_K": 13,
+        "radio_one_four": 14
     },
-    "methods": [
-        2, 4
-    ]
-}
+    {
+        "assigned_calc_id": "Milky Way 2",
+        "optical_u": 1,
+        "optical_v": 2,
+        "optical_g": 3,
+        "optical_r": 4,
+        "optical_i": 5,
+        "optical_z": 6,
+        "infrared_three_six": 7,
+        "infrared_four_five": 8,
+        "infrared_five_eight": 9,
+        "infrared_eight_zero": 10,
+        "infrared_J": 11,
+        "infrared_H": 12,
+        "infrared_K": 13,
+        "radio_one_four": 14
+    },
+    {
+        "job_id": 100,
+        "methods": [
+            2
+        ],
+        "token": "f+oaO91G\/C0asdasdasducZl99wY1FYBGgRimACty28Rbnb9Op66NM1VLK52epb\/YNzdX+0RvVyQ+wIOE1Irx4thTYGfOBoen3xMqom2Zly4cOcYZUmqBs0xCJaN+EpdLShm0eJ3VSaFveSFqLEaS+jJo9TnS9g=="
+    }
+]
 ```
 
 ### Sample JSON Response
-As a response, one of the attribute is `calculation_ids` array. Its each element corresponds to the calculation in the request. These can be seen as *receipt* of a calculation, and is used to retrieve status and result of a calculation.
+As a response, one of the attribute is `calculation_ids` array. Its each element corresponds to the calculation in the request. These can be seen as *receipt* of a calculation, and is used to retrieve their status and result.
 ```
 {
-    "errors": [],
-    "result": {
-        "2": {
-            "redshift_result": "104080",
-            "redshift_alt_result": null
-        },
-        "4": {
-            "redshift_result": null,
-            "redshift_alt_result": "http://redshift-01.cdms.westernsydney.edu.au/redshift/api/graph/5f96265c6c1be"
-        }
-    }
+    "calculation_ids": [100, 101],
+    "errors": []
 }
 ```
 
@@ -66,28 +78,30 @@ These are the measurements methods will use to estimate redshift.
 
 | Attribute | Can be Null? | Datatype |
 |-----------|--------------|----------|
-| `data:assigned_calc_id` | *yes* | `string` |
-| `data:optical_u` |  | `numeric` |
-| `data:optical_v` |  | `numeric` |
-| `data:optical_g` |  | `numeric` |
-| `data:optical_r` |  | `numeric` |
-| `data:optical_i` |  | `numeric` |
-| `data:optical_z` |  | `numeric` |
-| `data:infrared_three_six` |  | `numeric` |
-| `data:infrared_four_five` |  | `numeric` |
-| `data:infrared_five_eight` | | `numeric` |
-| `data:infrared_eight_zero` | | `numeric` |
-| `data:infrared_J` |  | `numeric` |
-| `data:infrared_H` |  | `numeric` |
-| `data:infrared_K` |  | `numeric` |
-| `data:radio_one_four` |  | `numeric` |
+| `assigned_calc_id` | *yes* | `string` |
+| `optical_u` |  | `numeric` |
+| `optical_v` |  | `numeric` |
+| `optical_g` |  | `numeric` |
+| `optical_r` |  | `numeric` |
+| `optical_i` |  | `numeric` |
+| `optical_z` |  | `numeric` |
+| `infrared_three_six` |  | `numeric` |
+| `infrared_four_five` |  | `numeric` |
+| `infrared_five_eight` | | `numeric` |
+| `infrared_eight_zero` | | `numeric` |
+| `infrared_J` |  | `numeric` |
+| `infrared_H` |  | `numeric` |
+| `infrared_K` |  | `numeric` |
+| `radio_one_four` |  | `numeric` |
 
-#### Methods
-`methods` array contains `method_id` of those methods that will be used to perform the calculations.
+#### Metadata
+`methods` array contains `method_id` of those methods that will be used to perform calculation. `token` is the Authentication Token.
 
 | Attribute | Can be Null? | Datatype |
 |-----------|--------------|----------|
 | `methods` | *no* | `array<int>` |
+| `job_id` | *no* | `string` |
+| `token` | *no* | `string` |
 
 ### Sample cURL Command
 
