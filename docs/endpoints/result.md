@@ -1,5 +1,5 @@
 # /result `POST` `Content-Type: application/json`
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent bibendum lacinia aliquam. Integer lacinia blandit.
+Returns results of calculations.
 
 ### Authentication Token required?
 **Yes**
@@ -61,14 +61,3 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent bibendum lacin
 |-----------|--------------|----------|
 | `calculation_ids` | *no* | `array<int>` |
 | `metadata:token` | *no* | `string` |
-
-### Sample cURL Command
-#### Windows
-```
-
-```
-
-#### Mac and Linux
-```
-
-```
