@@ -14,6 +14,16 @@ Returns status of calculations, can be either 'SUBMITTED', 'PROCESSING', 'COMPLE
 ### Sample JSON Request
 ```
 {
+    "calculation_ids": [17, 18],
+    "metadata": {
+        "token": "k4edH5LHuJqDCe2ZRlbCuu9BX9NdAN0p\/b51OnUG2kQfxi"
+    }
+}
+```
+
+### Sample JSON Response
+```
+{
     "status": {
         "17": {
             "2": {
@@ -38,11 +48,6 @@ Returns status of calculations, can be either 'SUBMITTED', 'PROCESSING', 'COMPLE
     },
     "errors": []
 }
-```
-
-### Sample JSON Response
-```
-
 ```
 ### Attributes' Details
 
