@@ -1,3 +1,5 @@
+For Readme please use: https://mahisnghrwt.github.io/redshift-api/
+
 ###### [Home](README.md) • [Endpoints](/endpoints/README.md) • [Authentication and Authorization](/authentication-authorization.md) • [Script](/script.md)
 ---
 # Guide - Redshift API
